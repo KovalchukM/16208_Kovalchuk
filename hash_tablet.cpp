@@ -9,6 +9,12 @@ typedef struct Value {
 	unsigned weight;
 } Value;
 
+bool operator ==(const Value& a , const Value& b){
+	if(a.name != b.name || a.age != b.age || a.weight != b.weight)
+		return 0;
+	return 1;
+}
+
 class hash_table {
 public:
 	hash_table(int n){
@@ -21,7 +27,7 @@ public:
 		size = n;
 	}
 	~hash_table(){
-
+		delete (parameters);
 	}
 
 	hash_table(const hash_table& b){
@@ -44,7 +50,7 @@ public:
 		b.size = k;
 	}
 
-	hash_table& operator=(const hash_table& b){
+	hash_table& operator = (const hash_table& b){
 		parameters = b.parameters;
 		size = b.size;
 	}
@@ -60,7 +66,7 @@ public:
 		parameters[index].weight = 0;
 		if(parameters[index].name == "NULL" && parameters[index].age == 0 && parameters[index].weight == 0)
 			return 0;
-		return 1;	
+		return 1;
 	}
 
 	bool insert(const key& k, Value& v){
@@ -72,6 +78,8 @@ public:
 	}
 
 	bool contains(const key& k) const{
+		if (parameters == NULL)
+			return 0;
 		int index = get_hash_key(k);
 		if (parameters[index].name != "NULL")
 			return 0;
@@ -83,6 +91,8 @@ public:
 	}
 
 	Value& at(const key& k){
+		if( parameters == NULL)
+			return NULL;
 		int index = get_hash_key(k);
 		return(parameters[index]);
 	}
@@ -99,8 +109,8 @@ public:
 		return 1;
 	}
 
-	friend bool operator==(const hash_table & a, const hash_table & b);
-  	friend bool operator!=(const hash_table & a, const hash_table & b);
+	//	friend bool operator==(const hash_table & a, const hash_table & b);
+ 	//	friend bool operator!=(const hash_table & a, const hash_table & b);
 
 private:
 	Value *parameters;
@@ -126,6 +136,9 @@ hash_table *read(char *str){
 int main(int argc , char *argv)
 {
 	hash_table *students = read(argv[1]);
-	delete(students);
+	int n = 1;
+	while(n != 0){
+		cout << ""
+	}
 	return 0;  
 }
