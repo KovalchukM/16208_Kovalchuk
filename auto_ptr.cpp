@@ -12,43 +12,48 @@ struct A {
 
 class smartPointer{
 public:
-	smartPointer(){
+	smartPointer(){}
 
-	}
-
-	smartPointer(A *a) : a_(a) {
+	smartPointer(A *a) : a(a_) {
 
 	}
 
 	smartPointer( smartPointer & ptr){
-		a_ = ptr.a_;
-		ptr.a_ = NULL;
+		a = ptr.a;
+		ptr.a = NULL;
 		//1. скопировать указатель из ptr
 		//2. занулить указатель в ptr
 	}
 
-	smartPointer& operator=(smartPointer& ptr){
-		if( a_ == ptr.a_){
-			
+	smartPointer& operator = (smartPointer& ptr){
+		if( a != ptr.a){
+			if( a != NULL)
+				delete a;
+			a = ptr.a;
+			ptr.a = NULL;
 		}
-		delete a_;
-		a_ = ptr.a;
-		ptr.a_ = NULL;
 		// 0. проверка присваивания самому себе
 		// 1. освободить свой ресурс (если есть)
 		// 2. далее см констуктор копирования
 	}
 	
-	A *get(){}
+	A *get(){
+		if(a == NULL)
+			return NULL;
+		return (a);
+	}
 
-	A *release(){}
+	A *release(){
+		A *b = a;
+		return( b.get());
+	}
 
 	~smartPointer() {
 		std :: cout << "smartPointer destructor" << std :: endl;
-		delete a_;
+		delete a;
 	}
 private:
-	A *a_;
+	A *a;
 };
 
 void f(){
