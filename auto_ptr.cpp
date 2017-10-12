@@ -14,7 +14,7 @@ class smartPointer{
 public:
 	smartPointer(){}
 
-	smartPointer(A *a) : a(a_) {
+	smartPointer(A *a) : a(a) {
 
 	}
 
@@ -45,7 +45,7 @@ public:
 
 	A *release(){
 		A *b = a;
-		return( b.get());
+		return(b);
 	}
 
 	~smartPointer() {
