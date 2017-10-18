@@ -18,11 +18,17 @@ bool operator ==(const Value& a , const Value& b){
 	return 1;
 }
 
+bool operator !=(const Value& a , const Value& b){
+	if( a == b )
+		return 0;
+	return 1;
+}
+
 class hash_table {
 public:
 	hash_table(){
 		parameters = new Value[DEFAULT_SIZE];
-		for(int i = 0 ; i < n ; i++){
+		for(int i = 0 ; i < DEFAULT_SIZE ; i++){
 			parameters[i].name = "NULL";
 			parameters[i].age = 0;
 			parameters[i].weight = 0;
@@ -56,6 +62,7 @@ public:
 
 	hash_table(const hash_table& b){
 		parameters = b.parameters;
+		size = b.size;
 	}
 
 	int get_hash_key(const key& k){
@@ -68,19 +75,23 @@ public:
 	}
 
 	void swap(hash_table& b){
-		std :: swap (parameters, b.parameters);
+		Value *p = b.parameters;
+		b.parameters = parameters;
+		parameters = p;
 		int k = size;
 		size = b.size;
 		b.size = k;
 	}
 
 	hash_table& operator = (const hash_table& b){
+		delete(parameters);
 		parameters = b.parameters;
 		size = b.size;
 	}
 
 	void clear(){
 		delete(parameters);
+		size = 0;
 	}
 
 	bool erase(const key& k){
@@ -116,7 +127,7 @@ public:
 
 	Value& at(const key& k){
 		if( parameters == NULL)
-			return NULL;
+			throw 1;
 		int index = get_hash_key(k);
 		return(parameters[index]);
 	}
@@ -133,20 +144,30 @@ public:
 		return 1;
 	}
 
-	//	friend bool operator==(const hash_table & a, const hash_table & b);
- 	//	friend bool operator!=(const hash_table & a, const hash_table & b);
+	friend bool operator == (const hash_table & a, const hash_table & b){
+		if(a.size != b.size)
+			return 0;
+		for(int i = 0 ; i < a.size ; i++){
+			if (a.parameters[i] != b.parameters[i]){
+				return 0;
+			}
+		}
+		return 1;
+	};
+ 	friend bool operator != (const hash_table & a, const hash_table & b){
+ 		if(a == b)
+ 			return 0;
+ 		return 1;
+ 	};
 
 private:
 	Value *parameters;
 	unsigned int size;
 };
 
-int main(int argc , char **argv)
+int main(int argc , char *argv[])
 {
 	hash_table students(256 , argv[1]);
 	int n = 1;
-	// while(n != 0){
-	// 	std :: cout << "" << endl;
-	// }
 	return 0;  
 }
