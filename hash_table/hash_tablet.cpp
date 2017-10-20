@@ -1,19 +1,27 @@
 #include <iostream>
 #include <string>
-#include <fstream>
-
-#define DEFAULT_SIZE 32
 
 typedef std::string key;
 
 typedef struct Value {
-	key name;
-	unsigned age;
-	unsigned weight;
-} Value;
+	int age;
+	int weight;
+	Value(){
+		age = 0;
+		weight =0;
+	}
+} value;
+
+typedef struct NODE{
+	value parameters;
+	bool flag;
+	NODE(){
+		flag = 0;
+	}
+}NODE;
 
 bool operator ==(const Value& a , const Value& b){
-	if(a.name != b.name || a.age != b.age || a.weight != b.weight)
+	if(a.age != b.age || a.weight != b.weight)
 		return 0;
 	return 1;
 }
@@ -27,41 +35,21 @@ bool operator !=(const Value& a , const Value& b){
 class hash_table {
 public:
 	hash_table(){
-		parameters = new Value[DEFAULT_SIZE];
-		for(int i = 0 ; i < DEFAULT_SIZE ; i++){
-			parameters[i].name = "NULL";
-			parameters[i].age = 0;
-			parameters[i].weight = 0;
-		}
-		size = DEFAULT_SIZE;
+		array = new NODE[32];
+		size = 32;
 	}
 
-	hash_table(int n , char *str){
-		parameters = new Value[n];
-		for(int i = 0 ; i < n ; i++){
-			parameters[i].name = "NULL";
-			parameters[i].age = 0;
-			parameters[i].weight = 0;
-		}
-		std :: ifstream input(str);
-		while(!input.eof()){
-			Value tmp;
-			input >> tmp.name;
-			input >> tmp.age;
-			input >> tmp.weight;
-			if(tmp.name.empty() || tmp.age < 1 || tmp.weight < 1){
-				break;
-			}
-			insert( tmp );
-		}
+	hash_table(int n ){
+		array = new NODE[n];
 		size = n;
 	}
+
 	~hash_table(){
-		delete (parameters);
+		delete [] array;
 	}
 
 	hash_table(const hash_table& b){
-		parameters = b.parameters;
+		array = b.array;
 		size = b.size;
 	}
 
@@ -75,61 +63,53 @@ public:
 	}
 
 	void swap(hash_table& b){
-		Value *p = b.parameters;
-		b.parameters = parameters;
-		parameters = p;
+		NODE *p = b.array;
+		b.array = array;
+		array = p;
 		int k = size;
 		size = b.size;
 		b.size = k;
 	}
 
 	hash_table& operator = (const hash_table& b){
-		delete(parameters);
-		parameters = b.parameters;
+		delete(array);
+		array = b.array;
 		size = b.size;
 	}
 
 	void clear(){
-		delete(parameters);
+		delete(array);
 		size = 0;
 	}
 
 	bool erase(const key& k){
 		int index = get_hash_key(k);
-		parameters[index].name = "NULL";
-		parameters[index].age = 0;
-		parameters[index].weight = 0;
-		if(parameters[index].name == "NULL" && parameters[index].age == 0 && parameters[index].weight == 0)
-			return 0;
+		array[index].parameters.age = 0;
+		array[index].parameters.weight = 0;
+		array[index].flag = 0;
 		return 1;
 	}
 
-	bool insert(Value& v){
-		int index = get_hash_key(v.name);
-		parameters[index] = v;
-		if(parameters[index] == v)
-			return 0;
-		return 1;
+	bool insert(const key& k , const Value& v){
+		int index = get_hash_key(k);
+		if( !contains(k) ){
+			array[index].parameters = v;
+			return 1;
+		}
+		return 0;
 	}
 
 	bool contains(const key& k){
-		if (parameters == NULL)
-			return 0;
 		int index = get_hash_key(k);
-		if (parameters[index].name != "NULL")
+		if( !array[index].flag)
 			return 0;
 		return 1;
 	}
 
-	// Value& operator[](const key& k){
-			
-	// }
-
 	Value& at(const key& k){
-		if( parameters == NULL)
+		if( !contains(k))
 			throw 1;
-		int index = get_hash_key(k);
-		return(parameters[index]);
+		return(array[get_hash_key(k)].parameters);
 	}
 	// size_t size() const;{
 
@@ -137,7 +117,7 @@ public:
 
 	bool empty() const{
 		for(int i = 0 ; i < size ; i++){
-			if(parameters[i].name != "NULL"){
+			if(array[i].flag == 1){
 				return 0;
 			}
 		}
@@ -148,12 +128,13 @@ public:
 		if(a.size != b.size)
 			return 0;
 		for(int i = 0 ; i < a.size ; i++){
-			if (a.parameters[i] != b.parameters[i]){
+			if (a.array[i].parameters != b.array[i].parameters){
 				return 0;
 			}
 		}
 		return 1;
 	};
+
  	friend bool operator != (const hash_table & a, const hash_table & b){
  		if(a == b)
  			return 0;
@@ -161,13 +142,12 @@ public:
  	};
 
 private:
-	Value *parameters;
-	unsigned int size;
+	NODE *array;
+	int size;
 };
 
 int main(int argc , char *argv[])
 {
-	hash_table students(256 , argv[1]);
-	int n = 1;
+	hash_table students(256);
 	return 0;  
 }
