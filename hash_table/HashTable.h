@@ -1,5 +1,3 @@
-#include <iostream>
-#include <string>
 
 typedef std::string key;
 
@@ -9,6 +7,10 @@ typedef struct Value {
 	Value(){
 		age = 0;
 		weight =0;
+	}
+	Value(int a , int w){
+		age = a;
+		weight = w;
 	}
 } value;
 
@@ -33,6 +35,10 @@ bool operator !=(const Value& a , const Value& b){
 }
 
 class hash_table {
+private:
+	NODE *array;
+	int size;
+
 public:
 	hash_table(){
 		array = new NODE[32];
@@ -83,17 +89,11 @@ public:
 	}
 
 	bool erase(const key& k){
-		int index = get_hash_key(k);
-		array[index].parameters.age = 0;
-		array[index].parameters.weight = 0;
-		array[index].flag = 0;
-		return 1;
-	}
-
-	bool insert(const key& k , const Value& v){
-		int index = get_hash_key(k);
-		if( !contains(k) ){
-			array[index].parameters = v;
+		if( contains(k)){
+			int index = get_hash_key(k);
+			array[index].parameters.age = 0;
+			array[index].parameters.weight = 0;
+			array[index].flag = 0;
 			return 1;
 		}
 		return 0;
@@ -104,6 +104,16 @@ public:
 		if( !array[index].flag)
 			return 0;
 		return 1;
+	}
+
+	bool insert(const key& k , const Value& v){
+		int index = get_hash_key(k);
+		if( !contains(k) ){
+			array[index].parameters = v;
+			array[index].flag = 1;
+			return 1;
+		}
+		return 0;
 	}
 
 	Value& at(const key& k){
@@ -140,14 +150,4 @@ public:
  			return 0;
  		return 1;
  	};
-
-private:
-	NODE *array;
-	int size;
 };
-
-int main(int argc , char *argv[])
-{
-	hash_table students(256);
-	return 0;  
-}
