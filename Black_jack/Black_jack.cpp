@@ -44,4 +44,4 @@ int main(int argc , char *argv[]){
 		cards = argv[2];
 }
 
-// detailed|fast|tournament   a|b|c   (имена стратегий)
+// argv: detailed|fast|tournament   a|b|c   (имена стратегий)
