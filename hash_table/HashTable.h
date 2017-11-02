@@ -121,9 +121,6 @@ public:
 			throw 1;
 		return(array[get_hash_key(k)].parameters);
 	}
-	// size_t size() const;{
-
-	// }
 
 	bool empty() const{
 		for(int i = 0 ; i < size ; i++){
