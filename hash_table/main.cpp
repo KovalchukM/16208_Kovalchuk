@@ -3,6 +3,8 @@
 #include <string.h>
 #include "HashTable.h"
 
+typedef basic_hash_table<NODE> hash_table;
+
 TEST( contains , table){
 	hash_table H;
 	value V(28 , 80);
@@ -68,4 +70,5 @@ int main(int argc, char *argv[])
 {
  	testing::InitGoogleTest(&argc, argv);
  	return RUN_ALL_TESTS();
+ 	return 0;
 }

@@ -1,64 +1,68 @@
 #include <numeric>
 
-#define defailt_capacity 32 
+#define defailt_capacity 32
 
 typedef std::string key;
 
-typedef struct Value {
+struct value {
 	int age = 0;
 	int weight = 0;
-	Value(){}
-	Value(int a , int w){
+	value(){}
+	value(int a , int w){
 		age = a;
 		weight = w;
 	}
-} value;
+};
 
-typedef struct NODE{
+template<class key , class value>
+struct basic_NODE{
 	key name;
 	value parameters;
-	NODE *next = nullptr;
+	basic_NODE *next = nullptr;
 	bool flag = false;
 
-	NODE(){}
+	basic_NODE(){}
 
-	void operator =(const NODE& b){
+	void operator =(const basic_NODE& b){
 		name = b.name;
 		parameters = b.parameters;
 		flag = 1;
 		next = b.next;
 	}
-}NODE;
+};
 
-bool operator ==(const Value& a , const Value& b){
+typedef basic_NODE<key,value> NODE;
+
+bool operator ==(const value& a , const value& b){
 	if(a.age != b.age || a.weight != b.weight)
 		return 0;
 	return 1;
 }
 
-bool operator !=(const Value& a , const Value& b){
+bool operator !=(const value& a , const value& b){
 	if( a == b )
 		return 0;
 	return 1;
 }
 
-class hash_table {
+template<class N>
+class basic_hash_table {
 public:
-	hash_table(): capacity(defailt_capacity){
+	basic_hash_table(): capacity(defailt_capacity){
 		array = new NODE[defailt_capacity];
 		capacity = defailt_capacity;
 		size = 0;
 	}
 
-	hash_table(int n ): size(n){
+	basic_hash_table(int n ): size(n){
 		array = new NODE[n];
 		capacity = n;
 		size = 0;
 	}
 
-	hash_table(const hash_table& b) : array(b.array) , size(b.size) , capacity(b.capacity) {}
+	basic_hash_table(const basic_hash_table& b) : array(b.array) , size(b.size) , capacity(b.capacity) {}
 
-	~hash_table(){
+	~basic_hash_table(){
 		for(int i = 0; i < capacity ; i++){
 			if(array[i].next != nullptr)
 				listDelete(array[i].next);
@@ -79,13 +83,13 @@ public:
 		return(index);
 	}
 
-	void swap(hash_table& b){
+	void swap(basic_hash_table& b){
 		std :: swap(array , b.array);
 		std :: swap(size , b.size);
 		std :: swap(capacity , b.capacity);
 	}
 
-	hash_table& operator = (const hash_table& b){
+	basic_hash_table& operator = (const basic_hash_table& b){
 		clear();
 		array = new NODE [b.capacity];
 		size = b.size;
@@ -99,7 +103,7 @@ public:
 		}
 	}
 
-	bool insert(const key& k , const Value& v){
+	bool insert(const key& k , const value& v){
 		int index = get_hash_key(k);
 		if( !contains(k) ){
 			array[index].name = k;
@@ -165,9 +169,7 @@ public:
 					}
 					NODE *b = a->next;
 					a->next = a->next->next;
-					delete b;
-					printf("успех\n");
-				}
+					delete b;				}
 			}
 			else{
 				array[index].parameters.age = 0;
@@ -176,7 +178,6 @@ public:
 			}
 			return 1;
 		}
-		printf("Эрасе не будет\n\n");
 		return 0;
 	}
 
@@ -184,7 +185,7 @@ public:
 		return (array[get_hash_key(k)].flag);
 	}
 
-	Value& at(const key& k){
+	value& at(const key& k){
 		if( !contains(k))
 			throw 1;
 		int index = get_hash_key(k);
@@ -215,7 +216,7 @@ public:
 		return capacity;
 	}
 
-	friend bool operator == (const hash_table & a, const hash_table & b){
+	friend bool operator == (const basic_hash_table & a, const basic_hash_table & b){
 		if(a.size != b.size)
 			return 0;
 		for(int i = 0 ; i < a.size ; i++){
@@ -226,14 +227,14 @@ public:
 		return 1;
 	};
 
- 	friend bool operator != (const hash_table & a, const hash_table & b){
+ 	friend bool operator != (const basic_hash_table & a, const basic_hash_table & b){
  		if(a == b)
  			return 0;
  		return 1;
  	};
 
 private:
-	NODE *array;
+	N *array;
 	int size;
 	int capacity;
 };
