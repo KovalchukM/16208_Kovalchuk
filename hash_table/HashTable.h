@@ -49,13 +49,13 @@ template<class N>
 class basic_hash_table {
 public:
 	basic_hash_table(): capacity(defailt_capacity){
-		array = new NODE[defailt_capacity];
+		array = new N[defailt_capacity];
 		capacity = defailt_capacity;
 		size = 0;
 	}
 
 	basic_hash_table(int n ): size(n){
-		array = new NODE[n];
+		array = new N[n];
 		capacity = n;
 		size = 0;
 	}
@@ -70,7 +70,7 @@ public:
 		delete [] array;
 	}
 
-	void listDelete(NODE *a){
+	void listDelete(N *a){
 		if(a->next != nullptr){
 			listDelete(a->next);
 		}
@@ -91,7 +91,7 @@ public:
 
 	basic_hash_table& operator = (const basic_hash_table& b){
 		clear();
-		array = new NODE [b.capacity];
+		array = new N [b.capacity];
 		size = b.size;
 		capacity = b.capacity;
 		for(int i = 0 ; i < capacity ; i++){
@@ -115,10 +115,10 @@ public:
 			}
 			return true;
 		}
-		NODE *a = array+index;
+		N *a = array+index;
 		while( a->next != nullptr )
 			a = a->next;
-		a->next = new NODE;
+		a->next = new N;
 		a = a->next;
 		a->name = k;
 		a->parameters = v;
@@ -128,7 +128,7 @@ public:
 
 	void resize(){
 		capacity *= 3;
-		NODE *new_array = new NODE [capacity];
+		N *new_array = new N [capacity];
 		for(int i = 0 ; i < capacity/3 ; i++){
 			if(array[i].flag){
 				int index = get_hash_key(array[i].name);
@@ -155,7 +155,7 @@ public:
 			int index = get_hash_key(k);
 			if(array[index].next != nullptr){
 				if(array[index].name == k){
-					NODE *a = array[index].next;
+					N *a = array[index].next;
 					array[index].name = array[index].next ->name;
 					array[index].parameters = array[index].next -> parameters;
 					array[index].next = array[index].next -> next;
@@ -163,11 +163,11 @@ public:
 					delete a;
 				}
 				else{
-					NODE *a = array+index;
+					N *a = array+index;
 					while( a->next->name != k){
 						a = a->next;
 					}
-					NODE *b = a->next;
+					N *b = a->next;
 					a->next = a->next->next;
 					delete b;				}
 			}
@@ -189,7 +189,7 @@ public:
 		if( !contains(k))
 			throw 1;
 		int index = get_hash_key(k);
-		NODE *a = array+index;
+		N *a = array+index;
 		while(a->name != k){
 			a = a->next;
 			if( a == nullptr){
