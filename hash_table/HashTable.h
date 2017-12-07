@@ -1,8 +1,9 @@
+#ifndef _HASHTEBLE_
+#define _HASHTEBLE_
+
 #include <numeric>
 
-#define defailt_capacity 32
-
-typedef std::string key;
+const int defailt_capacity = 32;
 
 struct value {
 	int age = 0;
@@ -13,6 +14,8 @@ struct value {
 		weight = w;
 	}
 };
+
+typedef std::string key;
 
 template<class key , class value>
 struct basic_NODE{
@@ -238,3 +241,5 @@ private:
 	int size;
 	int capacity;
 };
+
+#endif
