@@ -15,50 +15,29 @@ struct value {
 	}
 };
 
-typedef std::string key;
-
-template<class key , class value>
-struct basic_NODE{
-	key name;
-	value parameters;
-	basic_NODE *next = nullptr;
-	bool flag = false;
-
-	basic_NODE(){}
-
-	void operator =(const basic_NODE& b){
-		name = b.name;
-		parameters = b.parameters;
-		flag = 1;
-		next = b.next;
-	}
-};
-
-typedef basic_NODE<key,value> NODE;
-
 bool operator ==(const value& a , const value& b){
 	if(a.age != b.age || a.weight != b.weight)
-		return 0;
-	return 1;
+		return false;
+	return true;
 }
 
 bool operator !=(const value& a , const value& b){
-	if( a == b )
-		return 0;
-	return 1;
+	return !(a == b);
 }
 
-template<class N>
+typedef std::string key;
+
+template<class key , class value>
 class basic_hash_table {
 public:
 	basic_hash_table(): capacity(defailt_capacity){
-		array = new N[defailt_capacity];
+		array = new NODE[defailt_capacity];
 		capacity = defailt_capacity;
 		size = 0;
 	}
 
 	basic_hash_table(int n ): size(n){
-		array = new N[n];
+		array = new NODE[n];
 		capacity = n;
 		size = 0;
 	}
@@ -73,7 +52,27 @@ public:
 		delete [] array;
 	}
 
-	void listDelete(N *a){
+	struct NODE{
+		key name;
+		value parameters;
+		NODE *next = nullptr;
+		bool flag = false;
+
+		NODE(){}
+
+		NODE(key k , value v ) : name(k) , parameters(v) , flag(true){}
+
+		NODE(const NODE& b) : name(b.name) , parameters(b.parameters) , flag(true){}
+
+		void operator =(const NODE* b){
+			name = b->name;
+			parameters = b->parameters;
+			flag = true;
+			next = b->next;
+		}
+	};
+
+	void listDelete(NODE *a){
 		if(a->next != nullptr){
 			listDelete(a->next);
 		}
@@ -92,16 +91,24 @@ public:
 		std :: swap(capacity , b.capacity);
 	}
 
-	basic_hash_table& operator = (const basic_hash_table& b){
+	basic_hash_table& operator = (const basic_hash_table *b){
+		if( this == b){
+			return this;
+		}
 		clear();
-		array = new N [b.capacity];
+		array = new NODE [b.capacity];
 		size = b.size;
 		capacity = b.capacity;
 		for(int i = 0 ; i < capacity ; i++){
 			if(b.array[i].flag){
-				array[i].name = b.array[i].name;
-				array[i].parameters = b.array[i].parameters;
-				array[i].flag = true;
+				array[i] = b.array[i];
+				NODE *tmpA = array[i];
+				while(tmpA->next != nullptr){
+					NODE *tmp = new NODE;
+					tmp = tmpA->next;
+					*(tmpA->next) = tmp;
+					tmpA = tmpA->next;
+				}
 			}
 		}
 	}
@@ -109,29 +116,23 @@ public:
 	bool insert(const key& k , const value& v){
 		int index = get_hash_key(k);
 		if( !contains(k) ){
-			array[index].name = k;
-			array[index].parameters = v;
-			array[index].flag = true;
+			array[index] = NODE(k , v);
 			size++;
 			if( size * 2 >= capacity){
 				resize();
 			}
 			return true;
 		}
-		N *a = array+index;
+		NODE *a = array+index;
 		while( a->next != nullptr )
 			a = a->next;
-		a->next = new N;
-		a = a->next;
-		a->name = k;
-		a->parameters = v;
-		a->flag = true;
+		a->next = new NODE(k ,v);
 		return true;
 	}
 
 	void resize(){
 		capacity *= 3;
-		N *new_array = new N [capacity];
+		NODE *new_array = new NODE [capacity];
 		for(int i = 0 ; i < capacity/3 ; i++){
 			if(array[i].flag){
 				int index = get_hash_key(array[i].name);
@@ -158,19 +159,16 @@ public:
 			int index = get_hash_key(k);
 			if(array[index].next != nullptr){
 				if(array[index].name == k){
-					N *a = array[index].next;
-					array[index].name = array[index].next ->name;
-					array[index].parameters = array[index].next -> parameters;
-					array[index].next = array[index].next -> next;
-					array[index].flag = true;
+					NODE *a = array[index].next;
+					array[index] = array[index].next;
 					delete a;
 				}
 				else{
-					N *a = array+index;
+					NODE *a = array+index;
 					while( a->next->name != k){
 						a = a->next;
 					}
-					N *b = a->next;
+					NODE *b = a->next;
 					a->next = a->next->next;
 					delete b;				}
 			}
@@ -179,9 +177,9 @@ public:
 				array[index].parameters.weight = 0;
 				array[index].flag = false;
 			}
-			return 1;
+			return true;
 		}
-		return 0;
+		return false;
 	}
 
 	bool contains(const key& k){
@@ -192,7 +190,7 @@ public:
 		if( !contains(k))
 			throw 1;
 		int index = get_hash_key(k);
-		N *a = array+index;
+		NODE *a = array+index;
 		while(a->name != k){
 			a = a->next;
 			if( a == nullptr){
@@ -205,10 +203,10 @@ public:
 	bool empty() const{
 		for(int i = 0 ; i < capacity ; i++){
 			if(array[i].flag){
-				return 0;
+				return false;
 			}
 		}
-		return 1;
+		return true;
 	}
 
 	int check_size(){
@@ -219,25 +217,25 @@ public:
 		return capacity;
 	}
 
-	friend bool operator == (const basic_hash_table & a, const basic_hash_table & b){
+	friend bool operator == (const basic_hash_table &a, const basic_hash_table &b){
 		if(a.size != b.size)
-			return 0;
-		for(int i = 0 ; i < a.size ; i++){
-			if (a.array[i].parameters != b.array[i].parameters){
-				return 0;
+			return false;
+		for(int i = 0 ; i < a.capacity ; i++){
+			if(a.array[i].flag){
+				if(!b.contains(a.array[i].name)){
+					return false;
+				}
 			}
 		}
-		return 1;
+		return true;
 	};
 
  	friend bool operator != (const basic_hash_table & a, const basic_hash_table & b){
- 		if(a == b)
- 			return 0;
- 		return 1;
+ 		return !(a==b);
  	};
 
 private:
-	N *array;
+	NODE *array;
 	int size;
 	int capacity;
 };
