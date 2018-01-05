@@ -5,19 +5,6 @@
 
 typedef basic_hash_table<key , value> hash_table;
 
-// TEST( ravno , table){
-// 	hash_table H1;
-// 	hash_table H2;
-// 	value V1(28 , 80);
-// 	value B1(22 , 99);
-// 	// valur V2(50 , 12);
-// 	// value B2(77 , 44);
-// 	H1.insert("Bart" , V1);
-// 	H1.insert("traB" , B1);
-// 	ASSERT_EQ(H1 = H1 , H1);
-// 	ASSERT_EQ(H2 = H1 , H1);
-// }
-
 TEST( contains , table){
 	hash_table H;
 	value V(28 , 80);
