@@ -3,15 +3,17 @@
 
 class Score_17: public Strategy{
 	public:
-		void turn() override {
-			if(score < 17)
-				pickCard();
-			else
-				pass = true;
+		Score_17() override{
+			name = "score_17";
 		}
 
-	private:
-		std::string name = "score_17";
+		void turn(int c) override {
+			score += c;
+			if(score >= 17){
+				pass = true;
+			}
+		}
+
 }
 
 Strategy *createScore_17(){
