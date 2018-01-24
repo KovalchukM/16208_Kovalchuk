@@ -18,10 +18,6 @@ class Score_17: public Strategy{
 
 };
 
-// Strategy* createScore_17(){
-// 	return new Score_17;
-// }
-
 namespace {
 	bool b = Factory<Strategy, Strategy*(*)(), std::string>::
 		get_instance()->register_strat("Score_17", Creator<Score_17, Strategy>::create);

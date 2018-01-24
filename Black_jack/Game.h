@@ -23,7 +23,6 @@ class Game{
 		}
 
 		virtual ~Game(){
-			printf("BASE dtor\n");
 			delete deck;
 			for(auto This : players)
 				delete This;

@@ -25,12 +25,6 @@ class OneDeck: public Deck{
 					cards.push_back(10);
 				}
 			}
-			// int k = 0;
-			// for(auto i : cards){
-			// 	k++;
-			// 	std::cout << i << " ";
-			// }
-			// std::cout<< "k = " << k;
 		}
 
 		int pick() override{

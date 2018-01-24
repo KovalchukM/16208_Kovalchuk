@@ -15,8 +15,6 @@ class Settings{
 			options.gameType = setGame(argv[1]);
 			options.cardType = setCard(argv[2]);
 			options.strategy = createStrategy(argc , argv);
-			// std::cout<< "EBOBO 2  " << options.strategy[0]->getName() << std::endl;
-			// std::cout<< "EBOBO 2  " << options.strategy[1]->getName() << std::endl;
 		}
 
 		Settings(const Settings& b ){
@@ -28,9 +26,15 @@ class Settings{
 		std::string setGame(std::string str){
 			if(str == "fast")
 				return "fast";
+			if(str == "Fast")
+				return "fast";
 			if( str == "detailed")
 				return "detailed";
+			if( str == "Detailed")
+				return "detailed";
 			if( str == "tournament")
+				return "tournament";
+			if( str == "Tournament")
 				return "tournament";
 			std::cout << "wrong gameType" << std::endl;
 			return "wrong";
@@ -55,7 +59,6 @@ class Settings{
 			std::vector<Strategy*> strategy;
 			for(int i = 3 ; i < argc ; i++){
 				strategy.push_back(Factory<Strategy, Strategy*(*)(), std::string>::get_instance()->create(argv[i]));
-				// std::cout<< "EBOBO  " << strategy[i-3]->getName() << std::endl;
 			}
 			return strategy;
 		}

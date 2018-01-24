@@ -59,11 +59,4 @@ class Strategy{
 		bool win = false;
 };
 
-
-
-// typedef Strategy* (*creator_f)(); //Указатель на функцию, создающую какой-то объект класса Strategy 
-
-
-// #include "Score_18.h"
-
 #endif
