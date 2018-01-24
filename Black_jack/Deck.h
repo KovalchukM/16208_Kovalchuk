@@ -3,17 +3,16 @@
 
 class Deck{
 	public:
-		virtual pick(){}
+		virtual int pick(){}
 
-	private:
-}
+};
 
 class RandDeck: public Deck{
 	public:
-		pick() override{
+		int pick() override{
 			return (1 + (rand() % 10));
 		}
-}
+};
 
 class OneDeck: public Deck{
 	public:
@@ -22,13 +21,19 @@ class OneDeck: public Deck{
 				for(int k = 1 ; k < 10 ; k++){
 					cards.push_back(k);
 				}
-				for(int k = 0 ; k < 2 ; k++){
+				for(int k = 0 ; k < 4 ; k++){
 					cards.push_back(10);
 				}
 			}
+			// int k = 0;
+			// for(auto i : cards){
+			// 	k++;
+			// 	std::cout << i << " ";
+			// }
+			// std::cout<< "k = " << k;
 		}
 
-		pick() override{
+		int pick() override{
 			int index = rand() % remainingCards;
 			int num = cards[index];
 			cards.erase(cards.begin() + index);
@@ -37,10 +42,10 @@ class OneDeck: public Deck{
 		}
 
 	private:
-		int size = 54;
-		int remainingCards = 54;
+		int size = 52;
+		int remainingCards = 52;
 		std::vector<int> cards;
-}
+};
 
 class CustomDeck: public Deck{
 	public:
@@ -52,14 +57,14 @@ class CustomDeck: public Deck{
 					for(int k = 1 ; k < 10 ; k++){
 						cards.push_back(k);
 					}
-					for(int k = 0 ; k < 2 ; k++){
+					for(int k = 0 ; k < 4 ; k++){
 						cards.push_back(10);
 					}
 				}
 			}
 		}
 
-		pick() override{
+		int pick() override{
 			int index = rand() % remainingCards;
 			int num = cards[index];
 			cards.erase(cards.begin() + index);
@@ -68,9 +73,9 @@ class CustomDeck: public Deck{
 		}
 
 	private:
-		int size = 54;
-		int remainingCards = 54;
+		int size = 52;
+		int remainingCards = 52;
 		std::vector<int> cards;
-}
+};
 
 #endif

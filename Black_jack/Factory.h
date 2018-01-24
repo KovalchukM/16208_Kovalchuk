@@ -3,10 +3,11 @@
 
 #include <unordered_map>
 
-template<class T>
+template<class Divider, class Parent>
 class Creator{
-	static T *create(){
-		return (new T);
+public:
+	static Parent *create(){
+		return (new Divider);
 	}
 };
 
@@ -16,22 +17,26 @@ template<class Product,
 class Factory {
 public:
 	Factory() {};
-	typedef Strategy * (*creator_f)(); //Указатель на функцию, создающую какой-то объект класса Strategy 
-
-//В двух словах себе. Я здесь создаю один глобальный объект и пользуюсь только им. 
-//Как я понял, это называется синглтон. Я не должен больше нигде обявлять обекты этого класса. 
-//Доступ к методам объекта осуществляется через Factory::get_instance().метод 
+	
 	static Factory* get_instance() {
 		static Factory f;
 		return &f;
 	} 
 
 	bool register_strat(const ID& id, Creator creator) {
-		return creators.insert({id, creator}).second;
+		creators.insert({id, creator});
+		return isRegistered(id);
+	}
+
+	bool isRegistered(const ID& id){
+		if(creators.find(id) == creators.end())
+			return false;
+		return true;
 	}
 
 	Product* create(const ID& id) {
 		if(creators.find(id) == creators.end()){
+			printf("nullptr\n");
 			return nullptr;
 		}
 		return creators[id]();
@@ -41,7 +46,5 @@ public:
 private:
 	std::unordered_map<ID, Creator> creators;
 };
-
-typedef Factory<Strategy, Strategy*(*)(), std::string> factory;
 
 #endif

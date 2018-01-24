@@ -1,35 +1,28 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <stdio.h>
 #include "Strategy.h"
-#include "Factory.h"
 #include "Settings.h"
 #include "Game.h"
 
 int main(int argc , char *argv[]){
+	srand(time(NULL));
 	if (argc < 4){
 		std::cout << "wrong number of arguments"<< std::endl;
 		return 1;
 	}
 	Options options = Settings(argc,argv).getOptions();
 
-	if(options.gameType == "wrong" || Options.cardType < 0 || (options.gameType == "tournament" && argc < 4))
+	if(options.gameType == "wrong" || options.cardType < 0 || (options.gameType == "tournament" && argc < 4))
 		return 1;
 
-	switch (options.gameType){
-		case "fast":{
-			FastGame game(options);
-			break;
-		}
-		case "detailed":{
-			DetailedGame game(options);
-			break;
-		}
-		case "tournament":{
-			TournamentGame game(options);
-			break;
-		}
-	}
-
+	if(options.gameType == "fast")
+		FastGame game(options);
+	if(options.gameType == "detailed")
+		DetailedGame game(options);
+	if( options.gameType == "tournament")
+		TournamentGame game(options);
 	return 0;
 }
 

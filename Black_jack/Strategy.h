@@ -1,18 +1,11 @@
 #ifndef STRATEGY_H_
 #define STRATEGY_H_
 
-#include "Score_17.h"
+#include "Factory.h"
 
 class Strategy{
 	public:
-		virtual Strategy(){}
-
-		virtual void turn(int n){
-			score += n;
-			if(score > 21){
-				pass = true;
-			}
-		}
+		virtual void turn(int n){}
 
 		void pickFirst(int n){
 			firstCard = n;
@@ -43,12 +36,34 @@ class Strategy{
 			return name;
 		}
 
-	private:
+		void reset(){
+			firstCard = 0;
+			score = 0;
+			pass = false;
+			win = false;
+		}
+
+		void operator =(const Strategy* b){
+			name = b->name;
+			firstCard = b->firstCard;
+			score = b->score;
+			pass = b->pass;
+			win = b->win;
+		}
+
+	protected:
 		std::string name;
 		int firstCard = 0;
 		int score = 0;
 		bool pass = false;
-		bool win = false
-}
+		bool win = false;
+};
+
+
+
+// typedef Strategy* (*creator_f)(); //Указатель на функцию, создающую какой-то объект класса Strategy 
+
+
+// #include "Score_18.h"
 
 #endif
