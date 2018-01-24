@@ -36,7 +36,6 @@ public:
 
 	Product* create(const ID& id) {
 		if(creators.find(id) == creators.end()){
-			printf("nullptr\n");
 			return nullptr;
 		}
 		return creators[id]();

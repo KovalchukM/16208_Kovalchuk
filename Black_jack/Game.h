@@ -58,7 +58,7 @@ class Game{
 				std::cout << i->getName() << std::endl;
 				std::cout << "		score: " << i->getScore() << " ";
 				if(i->isWinner())
-					std::cout << "winner"<< std::endl;
+					std::cout << "winner";
 				std::cout << std::endl;
 			}
 		}

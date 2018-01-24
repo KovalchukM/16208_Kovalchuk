@@ -58,7 +58,10 @@ class Settings{
 		std::vector<Strategy*> createStrategy(int argc , char *argv[]){
 			std::vector<Strategy*> strategy;
 			for(int i = 3 ; i < argc ; i++){
-				strategy.push_back(Factory<Strategy, Strategy*(*)(), std::string>::get_instance()->create(argv[i]));
+				if ( Factory<Strategy, Strategy*(*)(), std::string>::get_instance()->isRegistered(argv[i]) == false)
+					std::cout << "unknown player : " << argv[i] <<std::endl;
+				else
+					strategy.push_back(Factory<Strategy, Strategy*(*)(), std::string>::get_instance()->create(argv[i]));
 			}
 			return strategy;
 		}
