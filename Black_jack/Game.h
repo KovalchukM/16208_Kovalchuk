@@ -80,15 +80,17 @@ class FastGame: public Game{
 
 		void play() override{
 			for(auto i : players){
-				i->pickFirst(deck->pick());
-				i->turn(deck->pick());
+				if( i == players[0])
+					i->pickFirst(deck->pick() , deck->pick() , players[0]->getFirst());
+				else
+					i->pickFirst(deck->pick() , deck->pick() , 0);
 			}
 			int passes = 0;
 			while(passes != players.size()){
 				passes = 0;
 				for(auto i : players){
 					if(!(i->isPass())){
-						i->turn(deck->pick());
+						i->turn(deck->pick() , players[0]->getFirst());
 					}
 					if(i->isPass()){
 						passes++;
@@ -112,16 +114,20 @@ class DetailedGame: public Game{
 		void play() override{
 			std::cout<< "begin" << std::endl;
 			for(auto i : players){
-				i->pickFirst(deck->pick());
-				i->turn(deck->pick());
+				if( i == players[0])
+					i->pickFirst(deck->pick() , deck->pick() , players[0]->getFirst());
+				else
+					i->pickFirst(deck->pick() , deck->pick() , 0);
 				std::cout<< i->getName() << " : " << std::endl;
 				std::cout<< "		score:" << i->getScore() <<std::endl;
+				std::cout<< "		first card:" << i->getFirst() <<std::endl;
 				std::cout<< "		pass:";
 				if(i->isPass())
 					std::cout<< "yes" <<std::endl;
 				else
 					std::cout<< "no" <<std::endl;
 			}
+			printf("%d\n",players[0]->getFirst() );
 			std::cout<<"============================="<<std::endl;
 			int passes = 0;
 			int turn = 1;
@@ -130,7 +136,7 @@ class DetailedGame: public Game{
 				passes = 0;
 				for(auto i : players){
 					if(!(i->isPass())){
-							i->turn(deck->pick());
+							i->turn(deck->pick() , players[0]->getFirst());
 						}
 					if(i->isPass()){
 						passes++;
@@ -168,20 +174,20 @@ class TournamentGame: public Game{
 		void play() override{
 			for(int i = 0 ; i < (players.size() - 1) ; i++){
 				for(int k = (i + 1) ; k < players.size() ; k++){
-					players[i]->pickFirst(deck->pick());
-					players[i]->turn(deck->pick());
-					players[k]->pickFirst(deck->pick());
-					players[k]->turn(deck->pick());
+					int p1 = deck->pick();
+					int p2 = deck->pick();
+					players[i]->pickFirst( p1 , deck->pick() , p2);
+					players[k]->pickFirst( p2 , deck->pick() , p1);
 					int passes = 0;
 					while(passes != 2){
 						passes = 0;
 						if(!(players[i]->isPass()))
-							players[i]->turn(deck->pick());
+							players[i]->turn(deck->pick() , players[k]->getFirst());
 						if(players[i]->isPass()){
 							passes++;
 						}
 						if(!(players[k]->isPass()))
-							players[k]->turn(deck->pick());
+							players[k]->turn(deck->pick() , players[i]->getFirst());
 						if(players[k]->isPass()){
 							passes++;
 						}

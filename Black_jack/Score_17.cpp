@@ -9,13 +9,12 @@ class Score_17: public Strategy{
 			name = "Score_17";
 		}
 
-		void turn(int c) override {
+		void turn(int c , int dealerFirst) override {
 			score += c;
 			if(score >= 17){
 				pass = true;
 			}
 		}
-
 };
 
 namespace {

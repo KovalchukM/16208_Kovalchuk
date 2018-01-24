@@ -57,6 +57,9 @@ class Settings{
 
 		std::vector<Strategy*> createStrategy(int argc , char *argv[]){
 			std::vector<Strategy*> strategy;
+			if(options.gameType != "tournament"){
+				strategy.push_back(Factory<Strategy, Strategy*(*)(), std::string>::get_instance()->create("Dealer"));
+			}
 			for(int i = 3 ; i < argc ; i++){
 				if ( Factory<Strategy, Strategy*(*)(), std::string>::get_instance()->isRegistered(argv[i]) == false)
 					std::cout << "unknown player : " << argv[i] <<std::endl;

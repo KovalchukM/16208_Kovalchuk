@@ -5,11 +5,12 @@
 
 class Strategy{
 	public:
-		virtual void turn(int n){}
+		virtual void turn(int n , int dealerFirst){}
 
-		void pickFirst(int n){
+		void pickFirst(int n , int k , int dealerFirst){
 			firstCard = n;
 			score = n;
+			turn(k , dealerFirst);
 		}
 
 		void setWin(){
@@ -58,5 +59,7 @@ class Strategy{
 		bool pass = false;
 		bool win = false;
 };
+
+#include "Dealer.h"
 
 #endif

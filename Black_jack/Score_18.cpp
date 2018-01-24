@@ -9,7 +9,7 @@ class Score_18: public Strategy{
 			name = "score_18";
 		}
 
-		void turn(int c) override {
+		void turn(int c , int dealerFirst) override {
 			score += c;
 			if(score >= 18){
 				pass = true;
