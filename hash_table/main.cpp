@@ -66,6 +66,27 @@ TEST ( resize , table){
 	ASSERT_EQ( H.check_capacity() , 6);
 }
 
+TEST (clear , table){
+	hash_table H1;
+	value V1(33, 50);
+	H1.insert("blabla" , V1);
+	H1.insert("asdfg" , V1);
+	H1.clear();
+	ASSERT_EQ(H1.contains("blabla") , 0);
+	ASSERT_EQ(H1.contains("asdfg") , 0);
+}
+
+TEST ( ravno , table){
+	hash_table H1;
+	value V1(33, 50);
+	H1.insert("blabla" , V1);
+	hash_table H2;
+	value V2(44 , 77);
+	H2.insert("qwerty" , V2);
+	H2 = H1;
+	ASSERT_EQ( H2.contains("blabla") , 1);
+}
+
 int main(int argc, char *argv[])
 {
  	testing::InitGoogleTest(&argc, argv);

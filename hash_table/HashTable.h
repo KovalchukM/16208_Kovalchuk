@@ -45,11 +45,13 @@ public:
 	basic_hash_table(const basic_hash_table& b) : array(b.array) , size(b.size) , capacity(b.capacity) {}
 
 	~basic_hash_table(){
+		printf("Dtor\n");
 		for(int i = 0; i < capacity ; i++){
 			if(array[i].next != nullptr)
 				listDelete(array[i].next);
 		}
 		delete [] array;
+		printf("Dtop end\n");
 	}
 
 	struct NODE{
@@ -86,28 +88,28 @@ public:
 	}
 
 	void swap(basic_hash_table& b){
-		std :: swap(array , b.array);
-		std :: swap(size , b.size);
-		std :: swap(capacity , b.capacity);
-	}
-
-	basic_hash_table& operator = (const basic_hash_table *b){
-		if( this == b){
-			return this;
-		}
-		clear();
-		array = new NODE [b.capacity];
+		std::swap(array , b.array);
 		size = b.size;
 		capacity = b.capacity;
-		for(int i = 0 ; i < capacity ; i++){
-			if(b.array[i].flag){
-				array[i] = b.array[i];
-				NODE *tmpA = array[i];
-				while(tmpA->next != nullptr){
-					NODE *tmp = new NODE;
-					tmp = tmpA->next;
-					*(tmpA->next) = tmp;
-					tmpA = tmpA->next;
+	}
+
+	basic_hash_table& operator = (const basic_hash_table &b){
+		if( this != &b){
+			clear();
+			delete [] array;
+			array = new NODE [b.capacity];
+			size = b.size;
+			capacity = b.capacity;
+			for(int i = 0 ; i < capacity ; i++){
+				if(b.array[i].flag){
+					array[i] = b.array[i];
+					NODE *tmpA = &(array[i]);
+					while(tmpA->next != nullptr){
+						NODE *tmp = new NODE;
+						tmp = tmpA->next;
+						tmpA->next = tmp;
+						tmpA = tmpA->next;
+					}
 				}
 			}
 		}
@@ -152,6 +154,7 @@ public:
 		delete [] array;
 		size = 0;
 		capacity = defailt_capacity;
+		array = new NODE[capacity];
 	}
 
 	bool erase(const key& k){
@@ -217,7 +220,7 @@ public:
 		return capacity;
 	}
 
-	friend bool operator == (const basic_hash_table &a, const basic_hash_table &b){
+	friend bool operator == ( basic_hash_table &a, basic_hash_table &b){
 		if(a.size != b.size)
 			return false;
 		for(int i = 0 ; i < a.capacity ; i++){
@@ -230,7 +233,7 @@ public:
 		return true;
 	};
 
- 	friend bool operator != (const basic_hash_table & a, const basic_hash_table & b){
+ 	friend bool operator != ( basic_hash_table &a, basic_hash_table &b){
  		return !(a==b);
  	};
 
