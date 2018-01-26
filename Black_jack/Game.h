@@ -9,23 +9,23 @@ class Game{
 		virtual void makeDeck(Options options){
 			switch (options.cardType){
 				case 0:{
-					deck = new RandDeck;
+					deck = (std::unique_ptr<Deck>)new RandDeck;
 					break;
 				}
 				case 1:{
-					deck = new OneDeck;
+					deck = (std::unique_ptr<Deck>)new OneDeck;
 					break;
 				}
 				default:{
-					deck = new CustomDeck(options.cardType);
+					deck = (std::unique_ptr<Deck>)new CustomDeck(options.cardType);
 				}
 			}
 		}
 
 		virtual ~Game(){
-			delete deck;
-			for(auto This : players)
-				delete This;
+			for(auto it : players){
+				delete it;
+			}
 		}
 
 		virtual void play(){}
@@ -64,7 +64,7 @@ class Game{
 		}
 
 	protected:
-		Deck *deck;
+		std::unique_ptr<Deck> deck;
 		std::vector<Strategy*> players;
 		int passes = 0;
 };
@@ -75,24 +75,23 @@ class FastGame: public Game{
 		FastGame(Options options){
 			makeDeck(options);
 			players = options.strategy;
-			play();
 		}
 
 		void play() override{
-			for(auto i : players){
-				if( i == players[0])
-					i->pickFirst(deck->pick() , deck->pick() , players[0]->getFirst());
+			for(auto it : players){
+				if( it == players[0])
+					it->pickFirst(deck->pick() , deck->pick() , players[0]->getFirst());
 				else
-					i->pickFirst(deck->pick() , deck->pick() , 0);
+					it->pickFirst(deck->pick() , deck->pick() , 0);
 			}
 			int passes = 0;
 			while(passes != players.size()){
 				passes = 0;
-				for(auto i : players){
-					if(!(i->isPass())){
-						i->turn(deck->pick() , players[0]->getFirst());
+				for(auto it : players){
+					if(!(it->isPass())){
+						it->turn(deck->pick() , players[0]->getFirst());
 					}
-					if(i->isPass()){
+					if(it->isPass()){
 						passes++;
 					}
 				}
@@ -108,43 +107,40 @@ class DetailedGame: public Game{
 		DetailedGame(Options options){
 				makeDeck(options);
 				players = options.strategy;
-				play();
 			}
 
 		void play() override{
-			std::cout<< "begin" << std::endl;
-			for(auto i : players){
-				if( i == players[0])
-					i->pickFirst(deck->pick() , deck->pick() , players[0]->getFirst());
+			for(auto it : players){
+				if( it == players[0])
+					it->pickFirst(deck->pick() , deck->pick() , players[0]->getFirst());
 				else
-					i->pickFirst(deck->pick() , deck->pick() , 0);
-				std::cout<< i->getName() << " : " << std::endl;
-				std::cout<< "		score:" << i->getScore() <<std::endl;
-				std::cout<< "		first card:" << i->getFirst() <<std::endl;
+					it->pickFirst(deck->pick() , deck->pick() , 0);
+				std::cout<< it->getName() << " : " << std::endl;
+				std::cout<< "		score:" << it->getScore() <<std::endl;
+				std::cout<< "		first card:" << it->getFirst() <<std::endl;
 				std::cout<< "		pass:";
-				if(i->isPass())
+				if(it->isPass())
 					std::cout<< "yes" <<std::endl;
 				else
 					std::cout<< "no" <<std::endl;
 			}
-			printf("%d\n",players[0]->getFirst() );
 			std::cout<<"============================="<<std::endl;
 			int passes = 0;
 			int turn = 1;
 			while(passes != players.size()){
 				std::cout<< "turn " << turn <<std::endl;
 				passes = 0;
-				for(auto i : players){
-					if(!(i->isPass())){
-							i->turn(deck->pick() , players[0]->getFirst());
+				for(auto it : players){
+					if(!(it->isPass())){
+							it->turn(deck->pick() , players[0]->getFirst());
 						}
-					if(i->isPass()){
+					if(it->isPass()){
 						passes++;
 					}
-					std::cout<< i->getName() << " : " << std::endl;
-					std::cout<< "		score:" << i->getScore() <<std::endl;
+					std::cout<< it->getName() << " : " << std::endl;
+					std::cout<< "		score:" << it->getScore() <<std::endl;
 					std::cout<< "		pass:";
-					if(i->isPass())
+					if(it->isPass())
 						std::cout<< "yes" <<std::endl;
 					else
 						std::cout<< "no" <<std::endl;
@@ -164,10 +160,12 @@ class TournamentGame: public Game{
 			players = options.strategy;
 			wins = new int [players.size()];
 			std::fill_n(wins , players.size() , 0);
-			play();
 		}
 
 		~TournamentGame(){
+			for(auto it : players){
+				delete it;
+			}
 			delete wins;
 		}
 

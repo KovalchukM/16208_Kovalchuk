@@ -53,7 +53,7 @@ class Strategy{
 		}
 
 	protected:
-		std::string name;
+		std::string name = "null";
 		int firstCard = 0;
 		int score = 0;
 		bool pass = false;

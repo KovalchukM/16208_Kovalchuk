@@ -47,7 +47,7 @@ class Settings{
 				return 1;
 			if(str == "c"){
 				int N = 0;
-				std::cout << "please enter card number" << std::endl;
+				std::cout << "please enter decks number" << std::endl;
 				std::cin  >> N;
 				return N;
 			}
@@ -57,6 +57,10 @@ class Settings{
 
 		std::vector<Strategy*> createStrategy(int argc , char *argv[]){
 			std::vector<Strategy*> strategy;
+			if(options.gameType == "tournament" && argc < 4){
+				std::cout << "not enought players to tournament"<< std::endl;
+				return strategy;
+			}
 			if(options.gameType != "tournament"){
 				strategy.push_back(Factory<Strategy, Strategy*(*)(), std::string>::get_instance()->create("Dealer"));
 			}
